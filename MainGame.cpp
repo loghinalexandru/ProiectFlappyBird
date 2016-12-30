@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include <iostream>
 #include <windows.h>
+#include <conio.h>
+#include "birdClass.h"
 
 using namespace std;
 
@@ -13,7 +15,6 @@ using namespace std;
 
 char gameScreen[MAX_HEIGHT][MAX_LENGTH];
 unsigned long long secondsPassed;
-
 
 
 
@@ -31,6 +32,7 @@ void showScreen()
 }
 
 
+stupidBird jack;
 
 void initialize()
 {
@@ -59,7 +61,36 @@ void initialize()
 
 
 
-void startGame();
+
+
+void startGame()
+{
+	initialize();
+	showScreen();
+	dropDown = 1;
+	while (true)
+	{
+		if (secondsPassed == 15)
+		{
+			dropDown++;
+			secondsPassed = 0;
+		}
+		Sleep(80);
+		if (_kbhit() && _getch() == 32)
+		{
+			dropDown = 1;
+			jack.moveJackUp();
+		}
+
+		else
+		{
+			secondsPassed++;
+			jack.moveJackDown();
+		}
+	}
+
+}
+
 
 void createTheMenu()
 {
@@ -67,7 +98,6 @@ void createTheMenu()
 	system("cls");
 	TCHAR Title[] = L"FLAPPY BIRD";
 	SetConsoleTitle(Title);
-	generatePipesInArray();
 	cout << "" << endl;
 	cout << " --------------------------------------------------------  " << endl;
 	cout << "|                                                        | " << endl;
