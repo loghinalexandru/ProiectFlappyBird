@@ -19,7 +19,6 @@ class stupidBird
 private:
 	int birdx, birdy;
 	int birdxCurrentPosition, birdyCurrentPosition;
-	int secondstillHeavyFall = 0;
 
 
 public:
@@ -31,10 +30,10 @@ public:
 		birdyCurrentPosition = birdy;
 	}
 	void getPlayerChar();
-	void moveJackUp();
-	void moveJackDown();
-	void eraseJack(int x, int y);
-	void writeJack(int x, int y);
+	void moveBirdUp();
+	void moveBirdDown();
+	void eraseBird(int x, int y);
+	void writeBird(int x, int y);
 	int getBirdX();
 	int getBirdY();
 };
@@ -53,33 +52,32 @@ void stupidBird::getPlayerChar()
 {
 	cout << "Choose you're ASCII bird : ";
 	cin >> playerChar;
-	system("cls");
 }
 
 
-void stupidBird::eraseJack(int x, int y)
+void stupidBird::eraseBird(int x, int y)
 {
 	gotoxy(x, y);
 	cout << ' ';
 }
 
-void stupidBird::writeJack(int x, int y)
+void stupidBird::writeBird(int x, int y)
 {
 	gotoxy(x, y);
 	cout << playerChar;
 }
 
-void stupidBird::moveJackUp()
+void stupidBird::moveBirdUp()
 {
-	eraseJack(birdxCurrentPosition, birdyCurrentPosition);
+	eraseBird(birdxCurrentPosition, birdyCurrentPosition);
 	birdyCurrentPosition -= 3;
-	writeJack(birdxCurrentPosition, birdyCurrentPosition);
+	writeBird(birdxCurrentPosition, birdyCurrentPosition);
 }
 
-void stupidBird::moveJackDown()
+void stupidBird::moveBirdDown()
 {
-	eraseJack(birdxCurrentPosition, birdyCurrentPosition);
+	eraseBird(birdxCurrentPosition, birdyCurrentPosition);
 	birdyCurrentPosition += dropDown;
-	writeJack(birdxCurrentPosition, birdyCurrentPosition);
+	writeBird(birdxCurrentPosition, birdyCurrentPosition);
 
 }
