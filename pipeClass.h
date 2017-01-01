@@ -35,9 +35,11 @@ public:
 		pipeyInitialPosition = pipey;
 	}
 
+	void movePipeLeftByOne();
 	void deletePipe();
 	void getPlayerPipe();
 	void pipeReset(int x);
+	int getGapInThePipe();
 	int getPipeX() { return pipex; }
 
 };
@@ -59,4 +61,37 @@ void pipe::getPlayerPipe()
 	system("cls");
 	cout << "Choose you're pipe mothafucka , write 5 ASCII chars or one by one if you like typing: ";
 	cin >> pipeChar;
+}
+
+
+void pipe::deletePipe()
+{
+	for (unsigned int i = 0; i < randomNumber; i++)
+	{
+		gotoxy(pipex, i);
+		cout << ' ';
+	}
+	for (unsigned int i = randomNumber + 4; i < MAX_HEIGHT - 3; i++)
+	{
+		gotoxy(pipex, i);
+		cout << ' ';
+	}
+}
+
+
+void pipe::movePipeLeftByOne()
+{
+	deletePipe();
+	pipex--;
+	for (unsigned int i = 0; i < randomNumber; i++)
+	{
+		gotoxy(pipex, i);
+		cout << pipeChar;
+	}
+	for (unsigned int i = randomNumber + 4; i < MAX_HEIGHT - 3; i++)
+	{
+		gotoxy(pipex, i);
+		cout << pipeChar;
+	}
+
 }
