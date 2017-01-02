@@ -1,32 +1,41 @@
 #pragma once
 
 #include <iostream>
-#include <windows.h>
-#include <conio.h>
 #include "pipeClass.h"
 
 class powerUp
 {
 private:
 	int powerUpX, powerUpY;
-	int powerUpType = rand() % 3;
+	int powerUpType = 0;
 
 public:
 	int getPowerUpX();
-	void powerUpUpdatePosition(int x,int y);
-	void spwanPowerUp();
+	void powerUpUpdatePosition(int x, int y);
+	void spawnPowerUp();
 	void movePowerUp();
 	void deletePowerUp();
+	int getPowerUpType();
+	void powerUpTypeRandomize();
 };
 
 
+void powerUp::powerUpTypeRandomize()
+{
+	powerUpType = rand() % 3;
+}
 
-int  powerUp::getPowerUpX(void)
+int powerUp::getPowerUpType()
+{
+	return powerUpType;
+}
+
+int  powerUp::getPowerUpX()
 {
 	return powerUpX;
 
 }
-void powerUp::powerUpUpdatePosition(int x,int y)
+void powerUp::powerUpUpdatePosition(int x, int y)
 {
 
 	powerUpX = x;
@@ -34,17 +43,28 @@ void powerUp::powerUpUpdatePosition(int x,int y)
 }
 
 
-void powerUp::spwanPowerUp()
+void powerUp::spawnPowerUp()
 {
 	gotoxy(powerUpX, powerUpY);
-	cout << 'P';
+	switch (powerUpType)
+	{
+	case 0:
+		cout << 'P';
+		break;
+	case 1:
+		cout << 'S';
+		break;
+	case 2:
+		cout << 'G';
+		break;
+	}
 }
 
 
 void powerUp::deletePowerUp()
 {
 	gotoxy(powerUpX, powerUpY);
-	cout <<' ';
+	cout << ' ';
 }
 
 void powerUp::movePowerUp()
@@ -52,5 +72,16 @@ void powerUp::movePowerUp()
 	deletePowerUp();
 	powerUpX--;
 	gotoxy(powerUpX, powerUpY);
-	cout << 'P';
+	switch (powerUpType)
+	{
+	case 0:
+		cout << 'P';
+		break;
+	case 1:
+		cout << 'S';
+		break;
+	case 2:
+		cout << 'G';
+		break;
+	}
 }

@@ -99,6 +99,7 @@ void displayScore()
 
 bool checkCollision()
 {
+	bool pipeCheck = false;
 	for (unsigned int i = 0; i < 5; i++)
 	{
 		if (jack.getBirdY() >= MAX_HEIGHT - 3)
@@ -110,7 +111,6 @@ bool checkCollision()
 			playerHighScore++;
 			displayScore();
 			return false;
-
 		}
 		else
 		{
@@ -120,7 +120,7 @@ bool checkCollision()
 			}
 		}
 	}
-
+	return false;
 }
 
 
@@ -147,7 +147,7 @@ void gameOver()
 	cout << '\n';
 	cout << "You got: " << playerHighScore << " points\n";
 
-	Beep(1000, 3000);
+	//Beep(1000, 3000);
 
 
 }
@@ -172,7 +172,6 @@ void startGame()
 			if (jack.getBirdY() > 2)
 			{
 				jack.moveBirdUp();
-
 			}
 		}
 
@@ -194,18 +193,22 @@ void startGame()
 				arrayOfPipes[i].movePipeLeftByOne();
 
 			}
-			if (checkCollision() == true)
-			{
-				gameOver();
-				return;
-			}
 		}
-		if (playerHighScore % 5 == 0 && playerHighScore && renderedPowerUp == false)
+
+		if (checkCollision() == true)
 		{
+			gameOver();
+			return;
+		}
+
+		if (playerHighScore % 10 == 0 && playerHighScore && renderedPowerUp == false)
+		{
+			perk.powerUpTypeRandomize();
 			generatePowerUp();
-			perk.spwanPowerUp();
+			perk.spawnPowerUp();
 			renderedPowerUp = true;
 		}
+
 		if (renderedPowerUp == true)
 		{
 			if (perk.getPowerUpX() == 1)
@@ -260,7 +263,6 @@ int main()
 {
 
 	createTheMenu();
-
 	return 0;
 }
 

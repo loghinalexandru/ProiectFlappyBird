@@ -1,7 +1,5 @@
 #pragma once
 #include <iostream>
-#include <windows.h>
-#include <conio.h>
 #include"pipeClass.h"
 
 using namespace std;
