@@ -11,6 +11,7 @@ private:
 
 public:
 	int getPowerUpX();
+	int getPowerUpY();
 	void powerUpUpdatePosition(int x, int y);
 	void spawnPowerUp();
 	void movePowerUp();
@@ -33,7 +34,11 @@ int powerUp::getPowerUpType()
 int  powerUp::getPowerUpX()
 {
 	return powerUpX;
+}
 
+int powerUp::getPowerUpY()
+{
+	return powerUpY;
 }
 void powerUp::powerUpUpdatePosition(int x, int y)
 {

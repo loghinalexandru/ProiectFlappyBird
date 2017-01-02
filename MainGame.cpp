@@ -23,6 +23,8 @@ long long playerHighScore;
 unsigned long long secondsPassed;
 bool renderedPowerUp;
 powerUp perk;
+unsigned int gameSpeed = 80;
+bool noCollision;
 
 
 void hideCursor()
@@ -48,7 +50,7 @@ void generatePipesInArray()
 void showScreen()
 {
 	system("cls");
-	system("color F0");
+	system("color 02");
 	for (unsigned int i = 0; i < MAX_HEIGHT; i++)
 	{
 		for (unsigned int j = 0; j < MAX_LENGTH; j++)
@@ -132,7 +134,26 @@ void generatePowerUp()
 	perk.powerUpUpdatePosition(perkX, perkY);
 }
 
-
+void powerUpCheckCollision()
+{
+	if (jack.getBirdX() == perk.getPowerUpX() && jack.getBirdY() == perk.getPowerUpY())
+	{
+		perk.deletePowerUp();
+		renderedPowerUp = false;
+		switch (perk.getPowerUpType())
+		{
+		case 0:
+			playerHighScore *= 2;
+			break;
+		case 1:
+			gameSpeed -= 10;
+			break;
+		case 2:
+			noCollision = true;
+			break;
+		}
+	}
+}
 
 void gameOver()
 {
@@ -147,8 +168,17 @@ void gameOver()
 	cout << '\n';
 	cout << "You got: " << playerHighScore << " points\n";
 
-	//Beep(1000, 3000);
-
+	Beep(932, 150);
+	Beep(784, 150);
+	Beep(587, 1200);
+	Sleep(50);
+	Beep(932, 150);
+	Beep(784, 150);
+	Beep(544, 1200);
+	Sleep(50);
+	Beep(932, 150);
+	Beep(784, 150);
+	Beep(523, 1200);
 
 }
 
@@ -157,14 +187,25 @@ void startGame()
 	initialize();
 	showScreen();
 	dropDown = 1;
+	unsigned int timeInGodMode = 0;
 	while (true)
 	{
+		if (noCollision == true)
+		{
+			timeInGodMode++;
+			playerHighScore++;
+			if (timeInGodMode == 30)
+			{
+				noCollision = false;
+				timeInGodMode = 0;
+			}
+		}
 		if (secondsPassed == 15)
 		{
 			dropDown++;
 			secondsPassed = 0;
 		}
-		Sleep(80);
+		Sleep(gameSpeed);
 		if (_kbhit() && _getch() == 32)
 		{
 			dropDown = 1;
@@ -172,6 +213,7 @@ void startGame()
 			if (jack.getBirdY() > 2)
 			{
 				jack.moveBirdUp();
+
 			}
 		}
 
@@ -194,13 +236,11 @@ void startGame()
 
 			}
 		}
-
-		if (checkCollision() == true)
+		if (checkCollision() == true && noCollision == false)
 		{
 			gameOver();
 			return;
 		}
-
 		if (playerHighScore % 10 == 0 && playerHighScore && renderedPowerUp == false)
 		{
 			perk.powerUpTypeRandomize();
@@ -217,6 +257,7 @@ void startGame()
 				renderedPowerUp = false;
 			}
 			else perk.movePowerUp();
+			powerUpCheckCollision();
 		}
 	}
 
