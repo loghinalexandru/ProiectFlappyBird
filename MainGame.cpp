@@ -8,6 +8,7 @@
 #include <vector>
 #include "birdClass.h"
 #include "pipeClass.h"
+#include "PowerUps.h"
 
 using namespace std;
 
@@ -20,6 +21,8 @@ std::vector<pipe> arrayOfPipes;
 char gameScreen[MAX_HEIGHT][MAX_LENGTH];
 long long playerHighScore;
 unsigned long long secondsPassed;
+bool renderedPowerUp;
+powerUp perk;
 
 
 void hideCursor()
@@ -40,6 +43,7 @@ void generatePipesInArray()
 		time -= 20;
 	}
 }
+
 
 void showScreen()
 {
@@ -120,7 +124,13 @@ bool checkCollision()
 }
 
 
-
+void generatePowerUp()
+{
+	unsigned int randomPipe = rand() % 5;
+	unsigned int randomPositionForPerk = rand() % 4;
+	unsigned int perkX = arrayOfPipes[randomPipe].getPipeX() + 1, perkY = arrayOfPipes[randomPipe].getGapInThePipe() + randomPositionForPerk;
+	perk.powerUpUpdatePosition(perkX, perkY);
+}
 
 
 
@@ -137,7 +147,7 @@ void gameOver()
 	cout << '\n';
 	cout << "You got: " << playerHighScore << " points\n";
 
-	//Beep(1000, 3000);
+	Beep(1000, 3000);
 
 
 }
@@ -158,8 +168,12 @@ void startGame()
 		if (_kbhit() && _getch() == 32)
 		{
 			dropDown = 1;
-			jack.moveBirdUp();
 
+			if (jack.getBirdY() > 2)
+			{
+				jack.moveBirdUp();
+
+			}
 		}
 
 		else
@@ -185,6 +199,21 @@ void startGame()
 				gameOver();
 				return;
 			}
+		}
+		if (playerHighScore % 5 == 0 && playerHighScore && renderedPowerUp == false)
+		{
+			generatePowerUp();
+			perk.spwanPowerUp();
+			renderedPowerUp = true;
+		}
+		if (renderedPowerUp == true)
+		{
+			if (perk.getPowerUpX() == 1)
+			{
+				perk.deletePowerUp();
+				renderedPowerUp = false;
+			}
+			else perk.movePowerUp();
 		}
 	}
 
@@ -231,7 +260,6 @@ int main()
 {
 
 	createTheMenu();
-	//Beep(1000, 50000000000);
 
 	return 0;
 }
