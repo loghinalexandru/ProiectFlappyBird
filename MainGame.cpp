@@ -8,7 +8,8 @@
 #include <vector>
 #include "birdClass.h"
 #include "pipeClass.h"
-#include "PowerUps.h"
+#include "powerUps.h"
+#include "menuAndGameOver.h"
 
 using namespace std;
 
@@ -19,23 +20,13 @@ using namespace std;
 
 std::vector<pipe> arrayOfPipes;
 char gameScreen[MAX_HEIGHT][MAX_LENGTH];
-long long playerHighScore;
+unsigned long long playerHighScore;
 unsigned long long secondsPassed;
 bool renderedPowerUp;
 powerUp perk;
 unsigned int gameSpeed = 75;
 bool noCollision;
 
-
-
-void hideCursor()
-{
-	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = FALSE;
-	SetConsoleCursorInfo(consoleHandle, &info);
-}
 
 void generatePipesInArray()
 {
@@ -60,7 +51,6 @@ void showScreen()
 		}
 	}
 }
-
 
 stupidBird jack;
 
@@ -177,52 +167,7 @@ void powerUpCheckCollision()
 	}
 }
 
-void gameOver()
-{
-	system("cls");
-	cout << " d8888b .db    db d8888b .db      d888888b  .o88b.  d888888b d888888b  .d8b.  d888888b d88888b\n";
-	cout << " 88  `8D 88    88 88  `8D 88        `88'   d8P  Y8    `88'   `~~88~~' d8' `8b `~~88~~' 88\n";
-	cout << " 88oodD' 88    88 88oooY' 88         88    8P          88       88    88ooo88    88    88ooooo\n";
-	cout << " 88~~~   8     88 88~~~b. 88         88    8b          88       88    88~~~88    88    88~~~~~\n";
-	cout << " 88      88b  d88 88   8D 88booo.   .88.    Y8b  d8   .88.      88    88   88    88    88.\n";
-	cout << " 88      ~Y8888P' Y8888P' Y88888P Y888888P  `Y88P'  Y888888P    YP    YP   YP    YP    Y88888P\n";
-	cout << '\n';
-	cout << '\n';
-	cout << "You got: " << playerHighScore << " points\n";
-	cout << "RANK :";
-	if (playerHighScore < 20)
-	{
-		cout << "Baboon\n";
-	}
-	else
-	{
-		if (playerHighScore > 50)
-		{
-			cout << "Drunk Student\n";
-		}
-		else
-		{
-			if (playerHighScore > 200)
-			{
-				cout << "GameMaster\n";
 
-			}
-			else
-			{
-				cout << "Rookie\n";
-			}
-		}
-	}
-	Beep(440, 500);
-	Beep(440, 500);
-	Beep(440, 500);
-	Beep(349, 350);
-	Beep(523, 150);
-	Beep(440, 500);
-	Beep(349, 350);
-	Beep(523, 150);
-	Beep(440, 1000);
-}
 
 void startGame()
 {
@@ -276,12 +221,11 @@ void startGame()
 			else
 			{
 				arrayOfPipes[i].movePipeLeftByOne();
-
 			}
 		}
 		if (checkCollision() == true && noCollision == false)
 		{
-			gameOver();
+			gameOver(playerHighScore);
 			return;
 		}
 		if (playerHighScore % 10 == 0 && playerHighScore && renderedPowerUp == false)
@@ -309,44 +253,19 @@ void startGame()
 
 void createTheMenu()
 {
-	int inputUser = 0;
 	system("cls");
 	TCHAR Title[] = L"FLAPPY BIRD";
 	SetConsoleTitle(Title);
-	hideCursor();
 	generatePipesInArray();
-	cout << "" << endl;
-	cout << "           --------------------------------------------------------  " << endl;
-	cout << "          |                                                        | " << endl;
-	cout << "          |   **** *    **** **** **** *   *    ***  * ***  ***    | " << endl;
-	cout << "          |   *    *    *  * *  * *  * *   *    *  * * *  * *  *   | " << endl;
-	cout << "          |   ***  *    **** **** **** *****    ***  * ***  *  *   | " << endl;
-	cout << "          |   *    *    *  * *    *      *      *  * * *  * *  *   | " << endl;
-	cout << "          |   *    **** *  * *    *      *      ***  * *  * ***    | " << endl;
-	cout << "          |                                                        | " << endl;
-	cout << "           --------------------------------------------------------  " << endl;
-	cout << "" << endl << endl;
-	cout << "" << endl << endl;
-	cout << "                               M E N U:    " << endl << endl;
-	cout << "                            1: Start Game  " << endl << endl;
-	cout << "                            2: Help        " << endl << endl;
-	cout << "                            3: Credits     " << endl << endl;
-	cout << "                            4: Exit        " << endl << endl;
-	cin >> inputUser;
-	if (inputUser == 1)
+	if (printMenu())
 	{
 		jack.getPlayerChar();
 		startGame();
-	}
-	if (inputUser == 4)
-	{
-		return;
 	}
 }
 
 int main()
 {
-
 	createTheMenu();
 	return 0;
 }

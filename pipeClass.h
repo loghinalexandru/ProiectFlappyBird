@@ -18,7 +18,7 @@ void gotoxy(int x, int y)
 class pipe
 {
 private:
-	char pipeChar = '#';
+	char pipeChar = 222;
 	int pipex, pipey;
 	int pipexInitialPosition, pipeyInitialPosition;
 	int randomNumber = (rand() % 11) + 2;
@@ -36,7 +36,6 @@ public:
 
 	void movePipeLeftByOne();
 	void deletePipe();
-	void getPlayerPipe();
 	void pipeReset(int x);
 	int getGapInThePipe();
 	int getPipeX() { return pipex; }
@@ -54,14 +53,6 @@ void pipe::pipeReset(int x)
 	randomNumber = (rand() % 11) + 2;
 
 }
-
-void pipe::getPlayerPipe()
-{
-	system("cls");
-	cout << "Choose you're pipe mothafucka , write 5 ASCII chars or one by one if you like typing: ";
-	cin >> pipeChar;
-}
-
 
 void pipe::deletePipe()
 {
