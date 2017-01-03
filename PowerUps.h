@@ -54,13 +54,13 @@ void powerUp::spawnPowerUp()
 	switch (powerUpType)
 	{
 	case 0:
-		cout << 'P';
+		cout << 'G';
 		break;
 	case 1:
 		cout << 'S';
 		break;
 	case 2:
-		cout << 'G';
+		cout << 'P';
 		break;
 	}
 }
@@ -80,13 +80,13 @@ void powerUp::movePowerUp()
 	switch (powerUpType)
 	{
 	case 0:
-		cout << 'P';
+		cout << 'G';
 		break;
 	case 1:
 		cout << 'S';
 		break;
 	case 2:
-		cout << 'G';
+		cout << 'P';
 		break;
 	}
 }

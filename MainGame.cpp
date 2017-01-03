@@ -23,8 +23,9 @@ long long playerHighScore;
 unsigned long long secondsPassed;
 bool renderedPowerUp;
 powerUp perk;
-unsigned int gameSpeed = 80;
+unsigned int gameSpeed = 75;
 bool noCollision;
+
 
 
 void hideCursor()
@@ -50,7 +51,7 @@ void generatePipesInArray()
 void showScreen()
 {
 	system("cls");
-	system("color 02");
+	system("color F0");
 	for (unsigned int i = 0; i < MAX_HEIGHT; i++)
 	{
 		for (unsigned int j = 0; j < MAX_LENGTH; j++)
@@ -90,12 +91,24 @@ void initialize()
 
 void displayScore()
 {
-	COORD pos;
-	pos.X = 110;
-	pos.Y = 10;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	gotoxy(105, 10);
 	cout << "Score:";
 	cout << playerHighScore;
+	gotoxy(105, 11);
+	if (noCollision == true)
+	{
+		cout << "GodMode: ON";
+	}
+	else
+	{
+		for (unsigned int i = 105; i <120; i++)
+		{
+			gotoxy(i, 11);
+			cout << ' ';
+		}
+	}
+
+
 
 }
 
@@ -118,6 +131,11 @@ bool checkCollision()
 		{
 			if (arrayOfPipes[i].getPipeX() == jack.getBirdX())
 			{
+				if (noCollision == true)
+				{
+					playerHighScore++;
+					displayScore();
+				}
 				return true;
 			}
 		}
@@ -136,21 +154,25 @@ void generatePowerUp()
 
 void powerUpCheckCollision()
 {
-	if (jack.getBirdX() == perk.getPowerUpX() && jack.getBirdY() == perk.getPowerUpY())
+	if (jack.getBirdX() == perk.getPowerUpX() && (jack.getBirdY() == perk.getPowerUpY() || jack.getBirdY() + 1 == perk.getPowerUpY() || jack.getBirdY() - 1 == perk.getPowerUpY()))
 	{
 		perk.deletePowerUp();
 		renderedPowerUp = false;
 		switch (perk.getPowerUpType())
 		{
 		case 0:
-			playerHighScore *= 2;
+			noCollision = true;
+			displayScore();
 			break;
 		case 1:
 			gameSpeed -= 10;
 			break;
 		case 2:
-			noCollision = true;
+			playerHighScore *= 2;
+			displayScore();
 			break;
+
+
 		}
 	}
 }
@@ -167,36 +189,57 @@ void gameOver()
 	cout << '\n';
 	cout << '\n';
 	cout << "You got: " << playerHighScore << " points\n";
+	cout << "RANK :";
+	if (playerHighScore < 20)
+	{
+		cout << "Baboon\n";
+	}
+	else
+	{
+		if (playerHighScore > 50)
+		{
+			cout << "Drunk Student\n";
+		}
+		else
+		{
+			if (playerHighScore > 200)
+			{
+				cout << "GameMaster\n";
 
-	Beep(932, 150);
-	Beep(784, 150);
-	Beep(587, 1200);
-	Sleep(50);
-	Beep(932, 150);
-	Beep(784, 150);
-	Beep(544, 1200);
-	Sleep(50);
-	Beep(932, 150);
-	Beep(784, 150);
-	Beep(523, 1200);
-
+			}
+			else
+			{
+				cout << "Rookie\n";
+			}
+		}
+	}
+	Beep(440, 500);
+	Beep(440, 500);
+	Beep(440, 500);
+	Beep(349, 350);
+	Beep(523, 150);
+	Beep(440, 500);
+	Beep(349, 350);
+	Beep(523, 150);
+	Beep(440, 1000);
 }
 
 void startGame()
 {
+	unsigned int timeInGodMode = 0;
 	initialize();
 	showScreen();
 	dropDown = 1;
-	unsigned int timeInGodMode = 0;
 	while (true)
 	{
 		if (noCollision == true)
 		{
 			timeInGodMode++;
-			playerHighScore++;
-			if (timeInGodMode == 30)
+			if (timeInGodMode == 115)
 			{
+
 				noCollision = false;
+				displayScore();
 				timeInGodMode = 0;
 			}
 		}
@@ -273,25 +316,26 @@ void createTheMenu()
 	hideCursor();
 	generatePipesInArray();
 	cout << "" << endl;
-	cout << " --------------------------------------------------------  " << endl;
-	cout << "|                                                        | " << endl;
-	cout << "|   **** *    **** **** **** *   *    ***  * ***  ***    | " << endl;
-	cout << "|   *    *    *  * *  * *  * *   *    *  * * *  * *  *   | " << endl;
-	cout << "|   ***  *    **** **** **** *****    ***  * ***  *  *   | " << endl;
-	cout << "|   *    *    *  * *    *      *      *  * * *  * *  *   | " << endl;
-	cout << "|   *    **** *  * *    *      *      ***  * *  * ***    | " << endl;
-	cout << "|                                                        | " << endl;
-	cout << " --------------------------------------------------------  " << endl;
+	cout << "           --------------------------------------------------------  " << endl;
+	cout << "          |                                                        | " << endl;
+	cout << "          |   **** *    **** **** **** *   *    ***  * ***  ***    | " << endl;
+	cout << "          |   *    *    *  * *  * *  * *   *    *  * * *  * *  *   | " << endl;
+	cout << "          |   ***  *    **** **** **** *****    ***  * ***  *  *   | " << endl;
+	cout << "          |   *    *    *  * *    *      *      *  * * *  * *  *   | " << endl;
+	cout << "          |   *    **** *  * *    *      *      ***  * *  * ***    | " << endl;
+	cout << "          |                                                        | " << endl;
+	cout << "           --------------------------------------------------------  " << endl;
 	cout << "" << endl << endl;
 	cout << "" << endl << endl;
-	cout << "                     M E N U:    " << endl << endl;
-	cout << "                  1: Start Game  " << endl << endl;
-	cout << "                  2: Help        " << endl << endl;
-	cout << "                  3: Credits     " << endl << endl;
-	cout << "                  4: Exit        " << endl << endl;
+	cout << "                               M E N U:    " << endl << endl;
+	cout << "                            1: Start Game  " << endl << endl;
+	cout << "                            2: Help        " << endl << endl;
+	cout << "                            3: Credits     " << endl << endl;
+	cout << "                            4: Exit        " << endl << endl;
 	cin >> inputUser;
 	if (inputUser == 1)
 	{
+		jack.getPlayerChar();
 		startGame();
 	}
 	if (inputUser == 4)
