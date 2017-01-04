@@ -1,12 +1,9 @@
 #pragma once
 #include <iostream>
 #include"pipeClass.h"
+#include "menuAndGameOver.h"
 
 using namespace std;
-
-
-#define MAX_HEIGHT 20
-#define MAX_LENGTH 120
 
 char playerChar = 'J';
 int dropDown;
@@ -62,7 +59,9 @@ void stupidBird::eraseBird(int x, int y)
 void stupidBird::writeBird(int x, int y)
 {
 	gotoxy(x, y);
+	setColor(14);
 	cout << playerChar;
+	setColor(2);
 }
 
 void stupidBird::moveBirdUp()

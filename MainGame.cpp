@@ -8,7 +8,7 @@
 #include <vector>
 #include "birdClass.h"
 #include "pipeClass.h"
-#include "powerUps.h"
+#include "powerUp.h"
 #include "menuAndGameOver.h"
 
 using namespace std;
@@ -19,13 +19,13 @@ using namespace std;
 
 
 std::vector<pipe> arrayOfPipes;
-char gameScreen[MAX_HEIGHT][MAX_LENGTH];
 unsigned long long playerHighScore;
 unsigned long long secondsPassed;
 bool renderedPowerUp;
 powerUp perk;
 unsigned int gameSpeed = 75;
 bool noCollision;
+stupidBird jack;
 
 
 void generatePipesInArray()
@@ -38,53 +38,34 @@ void generatePipesInArray()
 	}
 }
 
+void initialize(int positionY, char element)
+{
+	for (unsigned int i = 0; i < MAX_LENGTH; i++)
+	{
+		gotoxy(i, positionY);
+		cout << element;
+	}
+}
 
 void showScreen()
 {
 	system("cls");
-	system("color F0");
-	for (unsigned int i = 0; i < MAX_HEIGHT; i++)
-	{
-		for (unsigned int j = 0; j < MAX_LENGTH; j++)
-		{
-			cout << gameScreen[i][j];
-		}
-	}
+	setColor(8);
+	initialize(19, '/');
+	initialize(18, '/');
+	initialize(17, '#');
+	setColor(2);
 }
 
-stupidBird jack;
-
-void initialize()
-{
-	for (unsigned int i = 0; i < MAX_HEIGHT; i++)
-	{
-		for (unsigned int j = 0; j < MAX_LENGTH; j++)
-		{
-			switch (i)
-			{
-			case MAX_HEIGHT - 3:
-				gameScreen[i][j] = '-';
-				break;
-			case MAX_HEIGHT - 2:
-				gameScreen[i][j] = '/';
-				break;
-			case MAX_HEIGHT - 1:
-				gameScreen[i][j] = '#';
-				break;
-			default:
-				gameScreen[i][j] = ' ';
-				break;
-			}
-		}
-	}
-}
 
 void displayScore()
 {
+	setColor(15);
 	gotoxy(105, 10);
 	cout << "Score:";
 	cout << playerHighScore;
 	gotoxy(105, 11);
+
 	if (noCollision == true)
 	{
 		cout << "GodMode: ON";
@@ -97,9 +78,7 @@ void displayScore()
 			cout << ' ';
 		}
 	}
-
-
-
+	setColor(2);
 }
 
 bool checkCollision()
@@ -172,7 +151,6 @@ void powerUpCheckCollision()
 void startGame()
 {
 	unsigned int timeInGodMode = 0;
-	initialize();
 	showScreen();
 	dropDown = 1;
 	while (true)

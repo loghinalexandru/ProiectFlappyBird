@@ -3,8 +3,13 @@
 #include <iostream>
 #include <conio.h>
 #include <windows.h>
-
 using namespace std;
+
+void setColor(unsigned int color)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+
 
 void hideCursor()
 {
@@ -64,7 +69,7 @@ void gameOver(unsigned long long playerHighScore)
 
 int printMenu()
 {
-	system("color F0");
+	setColor(2);
 	hideCursor();
 	cout << "" << endl;
 	cout << "                              --------------------------------------------------------  " << endl;
