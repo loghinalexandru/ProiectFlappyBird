@@ -14,10 +14,6 @@
 using namespace std;
 
 
-#define MAX_HEIGHT 20
-#define MAX_LENGTH 120
-
-
 std::vector<pipe> arrayOfPipes;
 unsigned long long playerHighScore;
 unsigned long long secondsPassed;
@@ -51,9 +47,9 @@ void showScreen()
 {
 	system("cls");
 	setColor(8);
-	initialize(19, '/');
-	initialize(18, '/');
-	initialize(17, '#');
+	initialize(MAX_HEIGHT - 1, '/');
+	initialize(MAX_HEIGHT - 2, '/');
+	initialize(MAX_HEIGHT - 3, 176);
 	setColor(2);
 }
 
@@ -115,7 +111,7 @@ bool checkCollision()
 
 void generatePowerUp()
 {
-	unsigned int randomPipe = rand() % 5;
+	unsigned int randomPipe = rand() % 5 + 2;
 	unsigned int randomPositionForPerk = rand() % 4;
 	unsigned int perkX = arrayOfPipes[randomPipe].getPipeX() + 1, perkY = arrayOfPipes[randomPipe].getGapInThePipe() + randomPositionForPerk;
 	perk.powerUpUpdatePosition(perkX, perkY);
@@ -150,6 +146,7 @@ void powerUpCheckCollision()
 
 void startGame()
 {
+	system("cls");
 	unsigned int timeInGodMode = 0;
 	showScreen();
 	dropDown = 1;
@@ -203,6 +200,8 @@ void startGame()
 		}
 		if (checkCollision() == true && noCollision == false)
 		{
+			jack.writeBird(jack.getBirdX(), jack.getBirdY());
+			Sleep(300);
 			gameOver(playerHighScore);
 			return;
 		}
@@ -229,22 +228,36 @@ void startGame()
 }
 
 
-void createTheMenu()
+void resetAll()
 {
-	system("cls");
-	TCHAR Title[] = L"FLAPPY BIRD";
-	SetConsoleTitle(Title);
-	generatePipesInArray();
-	if (printMenu())
-	{
-		jack.getPlayerChar();
-		startGame();
-	}
+
+	jack.birdReset();
+	arrayOfPipes.clear();
 }
 
 int main()
 {
-	createTheMenu();
+	while (gameRunnig)
+	{
+		switch (printMenu())
+		{
+		case 1:
+			resetAll();
+			generatePipesInArray();
+			jack.getPlayerChar();
+			startGame();
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			resetAll();
+			break;
+		default:
+			break;
+		}
+	}
 	return 0;
 }
 

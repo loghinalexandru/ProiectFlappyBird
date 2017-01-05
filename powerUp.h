@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "pipeClass.h"
+#include "menuAndGameOver.h"
 
 class powerUp
 {
@@ -51,7 +52,7 @@ void powerUp::powerUpUpdatePosition(int x, int y)
 void powerUp::spawnPowerUp()
 {
 	gotoxy(powerUpX, powerUpY);
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	setColor(15);
 	switch (powerUpType)
 	{
 	case 0:
@@ -64,7 +65,7 @@ void powerUp::spawnPowerUp()
 		cout << 'P';
 		break;
 	}
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
+	setColor(2);
 
 }
 

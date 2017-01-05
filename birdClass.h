@@ -24,6 +24,7 @@ public:
 		birdxCurrentPosition = birdx;
 		birdyCurrentPosition = birdy;
 	}
+	void birdReset();
 	void getPlayerChar();
 	void moveBirdUp();
 	void moveBirdDown();
@@ -32,6 +33,12 @@ public:
 	int getBirdX();
 	int getBirdY();
 };
+
+void stupidBird::birdReset()
+{
+	birdxCurrentPosition = birdx;
+	birdyCurrentPosition = birdy;
+}
 
 int stupidBird::getBirdX()
 {
