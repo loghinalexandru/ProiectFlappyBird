@@ -21,7 +21,7 @@ bool renderedPowerUp;
 powerUp perk;
 unsigned int gameSpeed = 75;
 bool noCollision;
-stupidBird jack;
+stupidBird jack(20,10);
 
 
 void generatePipesInArray()

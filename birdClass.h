@@ -17,10 +17,10 @@ private:
 
 
 public:
-	stupidBird()
+	stupidBird(int x,int y)
 	{
-		birdx = 20;
-		birdy = 10;
+		birdx = x;
+		birdy = y;
 		birdxCurrentPosition = birdx;
 		birdyCurrentPosition = birdy;
 	}
