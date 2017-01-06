@@ -1,6 +1,3 @@
-// ScreenRender.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include <iostream>
 #include <windows.h>
@@ -10,7 +7,7 @@
 #include "pipeClass.h"
 #include "powerUp.h"
 #include "menuAndGameOver.h"
-
+#include "consoleFunctions.h"
 using namespace std;
 
 
@@ -18,10 +15,13 @@ std::vector<pipe> arrayOfPipes;
 unsigned long long playerHighScore;
 unsigned long long secondsPassed;
 bool renderedPowerUp;
+bool gameRunning = true;
+unsigned int gameMode;
+unsigned int dropDown;
 powerUp perk;
 unsigned int gameSpeed = 75;
 bool noCollision;
-stupidBird jack(20,10);
+stupidBird jack(20, 10);
 
 
 void generatePipesInArray()
@@ -183,7 +183,7 @@ void startGame()
 		else
 		{
 			secondsPassed++;
-			jack.moveBirdDown();
+			jack.moveBirdDown(dropDown);
 		}
 
 		for (unsigned int i = 0; i < 5; i++)
@@ -202,10 +202,10 @@ void startGame()
 		{
 			jack.writeBird(jack.getBirdX(), jack.getBirdY());
 			Sleep(300);
-			gameOver(playerHighScore);
+			gameOver(playerHighScore, gameRunning);
 			return;
 		}
-		if (playerHighScore % 10 == 0 && playerHighScore && renderedPowerUp == false)
+		if (playerHighScore % 10 == 0 && playerHighScore && renderedPowerUp == false && gameMode)
 		{
 			perk.powerUpTypeRandomize();
 			generatePowerUp();
@@ -230,28 +230,35 @@ void startGame()
 
 void resetAll()
 {
-
 	jack.birdReset();
 	arrayOfPipes.clear();
+	playerHighScore = 0;
 }
 
 int main()
 {
-	while (gameRunnig)
+	while (gameRunning)
 	{
-		switch (printMenu())
+		switch (printMenu(gameRunning))
 		{
 		case 1:
 			resetAll();
 			generatePipesInArray();
-			jack.getPlayerChar();
+			jack.getPlayerBird();
+			gameMode = 0;
 			startGame();
 			break;
 		case 2:
+			resetAll();
+			generatePipesInArray();
+			jack.getPlayerBird();
+			gameMode = 1;
+			startGame();
 			break;
-		case 3:
+		case 5:
+			printWallOfLegends();
 			break;
-		case 4:
+		case 6:
 			resetAll();
 			break;
 		default:
