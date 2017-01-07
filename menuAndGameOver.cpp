@@ -4,10 +4,19 @@
 #include <iostream>
 #include "consoleFunctions.h"
 #include <fstream>
+#include <vector>
 using namespace std;
 
 ifstream input;
 ofstream output;
+
+
+struct players
+{
+	unsigned long long score;
+	char nickname[50];
+};
+
 
 struct axis
 {
@@ -15,32 +24,89 @@ struct axis
 	int Y;
 };
 
-void checkNewRecord(unsigned long long playerHighScore)
+vector<players> wallOfLegends;
+
+bool isEmpty(std::ifstream& pFile)
 {
-	char playerNickName[50];
-	unsigned int long long topScore;
-	input.open("C:\\HighScore.txt");
-	while (input>>topScore)
+	return pFile.peek() == std::ifstream::traits_type::eof();
+}
+
+void writePlayersToFile()
+{
+	output.open("C:\\HighScore.txt");
+	for (unsigned int i = 0; i < wallOfLegends.size(); i++)
 	{
-		if (topScore < playerHighScore)
-		{
-			input.close();
-			output.open("C:\\HighScore.txt");
-			cout << "Congratulations you set a NEW highscore !!!";
-			cout << '\n';
-			cout << "Set you're nickname: ";
-			cin >> playerNickName;
-			output << playerHighScore;
-			output << '\n';
-			output << playerNickName;
-		}
+		output << wallOfLegends[i].score;
+		output << '\n';
+		output << wallOfLegends[i].nickname;
+		output << '\n';
 	}
 	output.close();
 }
 
 
+
+void storePlayers()
+{
+	wallOfLegends.clear();
+	input.open("C:\\HighScore.txt");
+	players x;
+	while (input >> x.score)
+	{
+		input.get();
+		input >> x.nickname;
+		wallOfLegends.push_back(x);
+	}
+	input.close();
+}
+
+void checkNewRecord(unsigned long long playerHighScore)
+{
+	players x;
+	input.open("C:\\HighScore.txt");
+	if (isEmpty(input))
+	{
+		x.score = playerHighScore;
+		cout << "Congratulations you've set a NEW record !!!\n";
+		cout << "Set you're nickname: ";
+		cin >> x.nickname;
+		wallOfLegends.push_back(x);
+		writePlayersToFile();
+		input.close();
+	}
+	else
+	{
+		input.close();
+		storePlayers();
+		for (unsigned int i = 0; i < wallOfLegends.size(); i++)
+		{
+			if (wallOfLegends[i].score < playerHighScore)
+			{
+				if (i == wallOfLegends.size() - 1)
+				{
+					x.score = playerHighScore;
+					cout << "Congratulations you've set a NEW record !!!\n";
+					cout << "Set you're nickname: ";
+					cin >> x.nickname;
+					wallOfLegends.push_back(x);
+					writePlayersToFile();
+					return;
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
+
+}
+
+
+
 void printWallOfLegends()
-{ 
+{
+	setColor(11);
 	bool backToMenu = true;
 	system("cls");
 	unsigned int topScore;
@@ -59,10 +125,10 @@ void printWallOfLegends()
 	while (input >> topScore)
 	{
 		cout << "                                          ";
-		cout << index<<'.'<<' ';
+		cout << index << '.' << ' ';
 		input.get();
 		input.getline(playerName, 50);
-		cout << playerName<<" with ";
+		cout << playerName << " with ";
 		cout << topScore;
 		cout << " points";
 		index++;
@@ -78,7 +144,7 @@ void printWallOfLegends()
 int printMenu(bool& gameRunning)
 {
 	customizeConsole();
-	setColor(2);
+	setColor(10);
 	hideCursor();
 	cout << "" << endl;
 	cout << "                              --------------------------------------------------------  " << endl;
@@ -92,8 +158,8 @@ int printMenu(bool& gameRunning)
 	cout << "                              --------------------------------------------------------  " << endl;
 	cout << "" << endl << endl;
 	cout << "                                                      M E N U:    " << endl << endl;
-	cout << "                                                   1: Classic  "    << endl << endl;
-	cout << "                                                   2: Arcade  "     << endl << endl;
+	cout << "                                                   1: Classic  " << endl << endl;
+	cout << "                                                   2: Arcade  " << endl << endl;
 	cout << "                                                   3: 1vs1       " << endl << endl;
 	cout << "                                                   4: Help     " << endl << endl;
 	cout << "                                                   5: WallOfLegends    " << endl << endl;
@@ -139,33 +205,28 @@ int printMenu(bool& gameRunning)
 			if (pos.Y == 14)
 			{
 				return 1;
-				break;
 			}
-			if (pos.Y==16)
+			if (pos.Y == 16)
 			{
 				return 2;
-				break;
 			}
 			if (pos.Y == 18)
 			{
 				gameRunning = false;
 				return 3;
-				break;
 			}
-			if (pos.Y==20)
+			if (pos.Y == 20)
 			{
 				return 4;
-				break;
 			}
-			if (pos.Y==22)
+			if (pos.Y == 22)
 			{
 				return 5;
-				break;
 			}
-			if (pos.Y==24)
+			if (pos.Y == 24)
 			{
+				gameRunning = false;
 				return 6;
-				break;
 			}
 		default:
 			break;
@@ -174,16 +235,20 @@ int printMenu(bool& gameRunning)
 }
 
 
-void gameOver(unsigned long long playerHighScore,bool& gameRunning)
+void gameOver(unsigned long long playerHighScore, bool& gameRunning)
 {
-	setColor(15);
+	setColor(10);
 	system("cls");
-	cout << " d8888b .db    db d8888b .db      d888888b  .o88b.  d888888b d888888b  .d8b.  d888888b d88888b\n";
-	cout << " 88  `8D 88    88 88  `8D 88        `88'   d8P  Y8    `88'   `~~88~~' d8' `8b `~~88~~' 88\n";
-	cout << " 88oodD' 88    88 88oooY' 88         88    8P          88       88    88ooo88    88    88ooooo\n";
-	cout << " 88~~~   8     88 88~~~b. 88         88    8b          88       88    88~~~88    88    88~~~~~\n";
-	cout << " 88      88b  d88 88   8D 88booo.   .88.    Y8b  d8   .88.      88    88   88    88    88.\n";
-	cout << " 88      ~Y8888P' Y8888P' Y88888P Y888888P  `Y88P'  Y888888P    YP    YP   YP    YP    Y88888P\n";
+
+	cout << "       ,ad8888ba,                                                  ,ad8888ba," << endl;
+	cout << "       d8''    `'8b                                               d8''    ''8b" << endl;
+	cout << "      d8'                                                        d8'        `8b" << endl;
+	cout << "      88             ,adPPYYba,  88,dPYba,,adPYba,    ,adPPYba,  88          88  8b       d8   ,adPPYba,  8b,dPPYba, " << endl;
+	cout << "      88      88888    ""     `Y8  88P'   '88'    '8a  a8P_____88  88          88  `8b     d8'  a8P_____88  88P'   'Y8" << endl;
+	cout << "      Y8,        88  ,adPPPPP88  88      88      88  8PP'''''''  Y8,         8P   `8b   d8'   8PP'''''''  88         " << endl;
+	cout << "       Y8a.    .a88   88,    ,88 88      88      88  '8b,   ,aa   Y8a.    .a8P     `8b,d8'    '8b,   ,aa  88   " << endl;
+	cout << "      `'Y88888P'    ` '8bbdP'Y8  88      88      88   `'Ybbd8''    `'Y8888Y''        '8'       `'Ybbd8''  88  " << endl;
+	cout << '\n';
 	cout << '\n';
 	cout << "You got: " << playerHighScore << " points\n";
 	cout << "RANK :";

@@ -11,7 +11,7 @@
 using namespace std;
 
 
-std::vector<pipe> arrayOfPipes;
+vector<pipe> arrayOfPipes;
 unsigned long long playerHighScore;
 unsigned long long secondsPassed;
 bool renderedPowerUp;
@@ -68,7 +68,7 @@ void displayScore()
 	}
 	else
 	{
-		for (unsigned int i = 105; i <120; i++)
+		for (unsigned int i = 105; i < 120; i++)
 		{
 			gotoxy(i, 11);
 			cout << ' ';
@@ -76,16 +76,21 @@ void displayScore()
 	}
 	setColor(2);
 }
+bool checkGroundCollision()
+{
+	if (jack.getBirdY() >= MAX_HEIGHT - 3)
+	{
+		return true;
+	}
+	else return false;
 
-bool checkCollision()
+}
+
+bool checkPipeCollision()
 {
 	bool pipeCheck = false;
 	for (unsigned int i = 0; i < 5; i++)
 	{
-		if (jack.getBirdY() >= MAX_HEIGHT - 3)
-		{
-			return true;
-		}
 		if (arrayOfPipes[i].getPipeX() == jack.getBirdX() && jack.getBirdY() >= arrayOfPipes[i].getGapInThePipe() && jack.getBirdY() <= arrayOfPipes[i].getGapInThePipe() + 3)
 		{
 			playerHighScore++;
@@ -111,7 +116,7 @@ bool checkCollision()
 
 void generatePowerUp()
 {
-	unsigned int randomPipe = rand() % 5 + 2;
+	unsigned int randomPipe = rand() % 3 + 2;
 	unsigned int randomPositionForPerk = rand() % 4;
 	unsigned int perkX = arrayOfPipes[randomPipe].getPipeX() + 1, perkY = arrayOfPipes[randomPipe].getGapInThePipe() + randomPositionForPerk;
 	perk.powerUpUpdatePosition(perkX, perkY);
@@ -163,7 +168,7 @@ void startGame()
 				timeInGodMode = 0;
 			}
 		}
-		if (secondsPassed == 15)
+		if (secondsPassed == 30)
 		{
 			dropDown++;
 			secondsPassed = 0;
@@ -198,7 +203,14 @@ void startGame()
 				arrayOfPipes[i].movePipeLeftByOne();
 			}
 		}
-		if (checkCollision() == true && noCollision == false)
+		if (checkPipeCollision() == true && noCollision == false)
+		{
+			jack.writeBird(jack.getBirdX(), jack.getBirdY());
+			Sleep(300);
+			gameOver(playerHighScore, gameRunning);
+			return;
+		}
+		if (checkGroundCollision())
 		{
 			jack.writeBird(jack.getBirdX(), jack.getBirdY());
 			Sleep(300);
