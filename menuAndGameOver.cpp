@@ -5,6 +5,8 @@
 #include "consoleFunctions.h"
 #include <fstream>
 #include <vector>
+#include <algorithm>
+#include <ctime>
 using namespace std;
 
 ifstream input;
@@ -15,6 +17,7 @@ struct players
 {
 	unsigned long long score;
 	char nickname[50];
+	unsigned long long time;
 };
 
 
@@ -26,6 +29,9 @@ struct axis
 
 vector<players> wallOfLegends;
 
+
+
+
 bool isEmpty(std::ifstream& pFile)
 {
 	return pFile.peek() == std::ifstream::traits_type::eof();
@@ -34,17 +40,17 @@ bool isEmpty(std::ifstream& pFile)
 void writePlayersToFile()
 {
 	output.open("C:\\HighScore.txt");
-	for (unsigned int i = 0; i < wallOfLegends.size(); i++)
+	for (int i = wallOfLegends.size() - 1; i >= 0; i--)
 	{
 		output << wallOfLegends[i].score;
 		output << '\n';
 		output << wallOfLegends[i].nickname;
 		output << '\n';
+		output << wallOfLegends[i].time;
+		output << '\n';
 	}
 	output.close();
 }
-
-
 
 void storePlayers()
 {
@@ -55,21 +61,24 @@ void storePlayers()
 	{
 		input.get();
 		input >> x.nickname;
+		input.get();
+		input >> x.time;
 		wallOfLegends.push_back(x);
 	}
 	input.close();
 }
 
-void checkNewRecord(unsigned long long playerHighScore)
+void checkNewRecord(unsigned long long playerHighScore, time_t duration)
 {
 	players x;
 	input.open("C:\\HighScore.txt");
 	if (isEmpty(input))
 	{
 		x.score = playerHighScore;
-		cout << "Congratulations you've set a NEW record !!!\n";
-		cout << "Set you're nickname: ";
+		cout << "         Congratulations you've set a NEW record !!!\n";
+		cout << "         Set you're nickname: ";
 		cin >> x.nickname;
+		x.time = duration;
 		wallOfLegends.push_back(x);
 		writePlayersToFile();
 		input.close();
@@ -78,26 +87,20 @@ void checkNewRecord(unsigned long long playerHighScore)
 	{
 		input.close();
 		storePlayers();
-		for (unsigned int i = 0; i < wallOfLegends.size(); i++)
+		reverse(wallOfLegends.begin(), wallOfLegends.end());
+		if (wallOfLegends[wallOfLegends.size() - 1].score < playerHighScore)
 		{
-			if (wallOfLegends[i].score < playerHighScore)
-			{
-				if (i == wallOfLegends.size() - 1)
-				{
-					x.score = playerHighScore;
-					cout << "Congratulations you've set a NEW record !!!\n";
-					cout << "Set you're nickname: ";
-					cin >> x.nickname;
-					wallOfLegends.push_back(x);
-					writePlayersToFile();
-					return;
-				}
-			}
-			else
-			{
-				return;
-			}
+
+			x.score = playerHighScore;
+			cout << "         Congratulations you've set a NEW record !!!\n";
+			cout << "         Set you're nickname: ";
+			cin >> x.nickname;
+			x.time = duration;
+			wallOfLegends.push_back(x);
+			writePlayersToFile();
+			return;
 		}
+		else return;
 	}
 
 }
@@ -108,8 +111,9 @@ void printWallOfLegends()
 {
 	setColor(11);
 	bool backToMenu = true;
+	unsigned long long duration;
 	system("cls");
-	unsigned int topScore;
+	unsigned long long topScore;
 	char playerName[50];
 	int index = 1;
 	input.open("C:\\HighScore.txt");
@@ -124,13 +128,15 @@ void printWallOfLegends()
 	cout << "\n";
 	while (input >> topScore)
 	{
-		cout << "                                          ";
+		cout << "                                       ";
 		cout << index << '.' << ' ';
 		input.get();
 		input.getline(playerName, 50);
 		cout << playerName << " with ";
 		cout << topScore;
-		cout << " points";
+		input >> duration;
+		cout << " points ";
+		cout << "in " << duration << " seconds";
 		index++;
 		cout << '\n';
 	}
@@ -174,7 +180,7 @@ int printMenu(bool& gameRunning)
 	{
 		switch (_getch())
 		{
-		case 56: case 119:
+		case 56: case 119:  case 72:
 			if (pos.Y != 14)
 			{
 				for (unsigned int i = pos.X; i < pos.X + 3; i++)
@@ -187,7 +193,7 @@ int printMenu(bool& gameRunning)
 				cout << "-->";
 			}
 			break;
-		case 50: case 115:
+		case 50: case 115: case 80:
 			if (pos.Y != 24)
 			{
 				for (unsigned int i = pos.X; i < pos.X + 3; i++)
@@ -235,7 +241,7 @@ int printMenu(bool& gameRunning)
 }
 
 
-void gameOver(unsigned long long playerHighScore, bool& gameRunning)
+void gameOver(unsigned long long playerHighScore, bool& gameRunning, time_t duration)
 {
 	setColor(10);
 	system("cls");
@@ -250,8 +256,10 @@ void gameOver(unsigned long long playerHighScore, bool& gameRunning)
 	cout << "      `'Y88888P'    ` '8bbdP'Y8  88      88      88   `'Ybbd8''    `'Y8888Y''        '8'       `'Ybbd8''  88  " << endl;
 	cout << '\n';
 	cout << '\n';
-	cout << "You got: " << playerHighScore << " points\n";
-	cout << "RANK :";
+	setColor(5);
+	cout << "         You got: " << playerHighScore << " points                                      " << "TimeSpent :" << duration;
+	cout << '\n';
+	cout << "         RANK :";
 	if (playerHighScore < 20)
 	{
 		cout << "Baboon\n";
@@ -276,9 +284,9 @@ void gameOver(unsigned long long playerHighScore, bool& gameRunning)
 		}
 	}
 	gameOverSound();
-	checkNewRecord(playerHighScore);
+	checkNewRecord(playerHighScore, duration);
 	char userInput = 'n';
-	cout << "Do you want to play again ? [y/N]: ";
+	cout << "         Do you want to play again ? [y/N]: ";
 	cin >> userInput;
 	if (userInput == 'y' || userInput == 'Y')
 	{
@@ -292,4 +300,29 @@ void gameOver(unsigned long long playerHighScore, bool& gameRunning)
 }
 
 
+
+
+void gameInstructions()
+{
+	system("cls");
+	setColor(15);
+	cout << "           888 888         888  \n";
+	cout << "           888 888  ,e e,  888 888 88e  \n";
+	cout << "           8888888 d88 88b 888 888 888b \n";
+	cout << "           888 888 888   , 888 888 888P \n";
+	cout << "           888 888  'YeeP' 888 888 88'  \n";
+	cout << "                               888      \n";
+	cout << "                               888  \n";
+	cout << '\n';
+	cout << "       Use SPACE to move the bird  \n";
+	cout << "                 PowerUps \n";
+	cout << "            (only in arcade mode)     \n";
+	cout << "         1. G-no collision for 15 seconds \n";
+	cout << "         2. S-reduce the game speed slightly\n";
+	cout << "         3.P-double you're points\n";
+	while (!_getch())
+	{
+
+	}
+}
 

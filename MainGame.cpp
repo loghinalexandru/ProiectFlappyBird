@@ -8,6 +8,8 @@
 #include "powerUp.h"
 #include "menuAndGameOver.h"
 #include "consoleFunctions.h"
+#include <ctime>
+
 using namespace std;
 
 
@@ -22,6 +24,8 @@ powerUp perk;
 unsigned int gameSpeed = 75;
 bool noCollision;
 stupidBird jack(20, 10);
+stupidBird daniels(18, 10);
+time_t gameStart, gameEnd, godModeStart, godModeEnd;
 
 
 void generatePipesInArray()
@@ -57,20 +61,32 @@ void showScreen()
 void displayScore()
 {
 	setColor(15);
-	gotoxy(105, 10);
+	gotoxy(103, 10);
 	cout << "Score:";
 	cout << playerHighScore;
-	gotoxy(105, 11);
+	gotoxy(103, 11);
 
 	if (noCollision == true)
 	{
 		cout << "GodMode: ON";
+		gotoxy(103, 12);
+		cout << "TimeRemaining:" << godModeStart - godModeEnd;
+		if (godModeStart - godModeEnd < 10)
+		{
+			gotoxy(118, 12);
+			cout << ' ';
+		}
 	}
 	else
 	{
-		for (unsigned int i = 105; i < 120; i++)
+		for (unsigned int i = 103; i < 120; i++)
 		{
 			gotoxy(i, 11);
+			cout << ' ';
+		}
+		for (unsigned int i = 103; i < 120; i++)
+		{
+			gotoxy(i, 12);
 			cout << ' ';
 		}
 	}
@@ -132,10 +148,16 @@ void powerUpCheckCollision()
 		{
 		case 0:
 			noCollision = true;
+			godModeStart = time(NULL);
+			godModeStart += 15;
+			godModeEnd = time(NULL);
 			displayScore();
 			break;
 		case 1:
-			gameSpeed -= 10;
+			if (gameSpeed < 150)
+			{
+				gameSpeed += 10;
+			}
 			break;
 		case 2:
 			playerHighScore *= 2;
@@ -151,6 +173,7 @@ void powerUpCheckCollision()
 
 void startGame()
 {
+	gameStart = time(NULL);
 	system("cls");
 	unsigned int timeInGodMode = 0;
 	showScreen();
@@ -159,13 +182,15 @@ void startGame()
 	{
 		if (noCollision == true)
 		{
-			timeInGodMode++;
-			if (timeInGodMode == 115)
+			if (godModeStart - godModeEnd == 0)
 			{
-
 				noCollision = false;
 				displayScore();
-				timeInGodMode = 0;
+			}
+			else
+			{
+				godModeEnd = time(NULL);
+				displayScore();
 			}
 		}
 		if (secondsPassed == 30)
@@ -207,14 +232,16 @@ void startGame()
 		{
 			jack.writeBird(jack.getBirdX(), jack.getBirdY());
 			Sleep(300);
-			gameOver(playerHighScore, gameRunning);
+			gameEnd = time(NULL);
+			gameOver(playerHighScore, gameRunning, gameEnd - gameStart);
 			return;
 		}
 		if (checkGroundCollision())
 		{
 			jack.writeBird(jack.getBirdX(), jack.getBirdY());
 			Sleep(300);
-			gameOver(playerHighScore, gameRunning);
+			gameEnd = time(NULL);
+			gameOver(playerHighScore, gameRunning, gameEnd - gameStart);
 			return;
 		}
 		if (playerHighScore % 10 == 0 && playerHighScore && renderedPowerUp == false && gameMode)
@@ -245,6 +272,7 @@ void resetAll()
 	jack.birdReset();
 	arrayOfPipes.clear();
 	playerHighScore = 0;
+	gameSpeed = 75;
 }
 
 int main()
@@ -266,6 +294,17 @@ int main()
 			jack.getPlayerBird();
 			gameMode = 1;
 			startGame();
+			break;
+		case 3:
+			resetAll();
+			generatePipesInArray();
+			jack.getPlayerBird();
+
+			gameMode = 1;
+			startGame();
+			break;
+		case 4:
+			gameInstructions();
 			break;
 		case 5:
 			printWallOfLegends();
