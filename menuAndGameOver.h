@@ -1,7 +1,7 @@
 
 int printMenu(bool& gameRunning);
 
-void gameOver(unsigned long long  playerHighScore, bool& gameRunnning, time_t duration);
+void gameOver(unsigned long long  playerHighScore, bool& gameRunnning, time_t duration, unsigned long long& timesPlayed);
 
 void printWallOfLegends();
 

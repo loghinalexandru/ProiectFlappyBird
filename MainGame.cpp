@@ -14,17 +14,16 @@ using namespace std;
 
 
 vector<pipe> arrayOfPipes;
-unsigned long long playerHighScore;
-unsigned long long secondsPassed;
+unsigned long long playerHighScore, timesPlayed;
+long long secondsPassed;
 bool renderedPowerUp;
 bool gameRunning = true;
 unsigned int gameMode;
-unsigned int dropDown;
+float dropDown;
 powerUp perk;
 unsigned int gameSpeed = 75;
 bool noCollision;
 stupidBird jack(20, 10);
-stupidBird daniels(18, 10);
 time_t gameStart, gameEnd, godModeStart, godModeEnd;
 
 
@@ -99,7 +98,6 @@ bool checkGroundCollision()
 		return true;
 	}
 	else return false;
-
 }
 
 bool checkPipeCollision()
@@ -193,10 +191,10 @@ void startGame()
 				displayScore();
 			}
 		}
-		if (secondsPassed == 30)
+		if (secondsPassed == 2)
 		{
-			dropDown++;
-			secondsPassed = 0;
+			dropDown += 0.5;
+			secondsPassed = -dropDown;
 		}
 		Sleep(gameSpeed);
 		if (_kbhit() && _getch() == 32)
@@ -209,7 +207,6 @@ void startGame()
 
 			}
 		}
-
 		else
 		{
 			secondsPassed++;
@@ -233,7 +230,7 @@ void startGame()
 			jack.writeBird(jack.getBirdX(), jack.getBirdY());
 			Sleep(300);
 			gameEnd = time(NULL);
-			gameOver(playerHighScore, gameRunning, gameEnd - gameStart);
+			gameOver(playerHighScore, gameRunning, gameEnd - gameStart, timesPlayed);
 			return;
 		}
 		if (checkGroundCollision())
@@ -241,7 +238,7 @@ void startGame()
 			jack.writeBird(jack.getBirdX(), jack.getBirdY());
 			Sleep(300);
 			gameEnd = time(NULL);
-			gameOver(playerHighScore, gameRunning, gameEnd - gameStart);
+			gameOver(playerHighScore, gameRunning, gameEnd - gameStart, timesPlayed);
 			return;
 		}
 		if (playerHighScore % 10 == 0 && playerHighScore && renderedPowerUp == false && gameMode)
@@ -251,7 +248,6 @@ void startGame()
 			perk.spawnPowerUp();
 			renderedPowerUp = true;
 		}
-
 		if (renderedPowerUp == true)
 		{
 			if (perk.getPowerUpX() == 1)
@@ -273,6 +269,11 @@ void resetAll()
 	arrayOfPipes.clear();
 	playerHighScore = 0;
 	gameSpeed = 75;
+	perk.deletePowerUp();
+	secondsPassed = 0;
+	dropDown = 1;
+	renderedPowerUp = false;
+	noCollision = false;
 }
 
 int main()
@@ -284,32 +285,23 @@ int main()
 		case 1:
 			resetAll();
 			generatePipesInArray();
-			jack.getPlayerBird();
 			gameMode = 0;
 			startGame();
 			break;
 		case 2:
 			resetAll();
 			generatePipesInArray();
-			jack.getPlayerBird();
 			gameMode = 1;
 			startGame();
 			break;
 		case 3:
-			resetAll();
-			generatePipesInArray();
-			jack.getPlayerBird();
-
-			gameMode = 1;
-			startGame();
-			break;
-		case 4:
 			gameInstructions();
 			break;
-		case 5:
+		case 4:
 			printWallOfLegends();
+
 			break;
-		case 6:
+		case 5:
 			resetAll();
 			break;
 		default:

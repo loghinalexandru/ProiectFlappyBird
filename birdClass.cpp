@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 void stupidBird::birdReset()
 {
 	birdxCurrentPosition = birdx;
@@ -17,15 +18,11 @@ int stupidBird::getBirdX()
 	return birdxCurrentPosition;
 }
 
+
 int stupidBird::getBirdY()
 {
-	return birdyCurrentPosition;
-}
 
-void stupidBird::getPlayerBird()
-{
-	cout << "Choose you're ASCII bird : ";
-	cin >> playerBird;
+	return birdyCurrentPosition;
 }
 
 

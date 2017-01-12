@@ -3,7 +3,7 @@ class stupidBird
 private:
 	int birdx, birdy;
 	int birdxCurrentPosition, birdyCurrentPosition;
-	char playerBird = 'J';
+	char playerBird = '>';
 
 
 public:
@@ -15,7 +15,6 @@ public:
 		birdyCurrentPosition = birdy;
 	}
 	void birdReset();
-	void getPlayerBird();
 	void moveBirdUp();
 	void moveBirdDown(unsigned int dropDown);
 	void eraseBird(int x, int y);

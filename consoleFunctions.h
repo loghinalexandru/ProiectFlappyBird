@@ -8,3 +8,4 @@ void hideCursor();
 void customizeConsole();
 
 void gameOverSound();
+

@@ -7,6 +7,9 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include<windows.h>
+#include <string>
+
 using namespace std;
 
 ifstream input;
@@ -16,7 +19,7 @@ ofstream output;
 struct players
 {
 	unsigned long long score;
-	char nickname[50];
+	string nickname;
 	unsigned long long time;
 };
 
@@ -28,8 +31,6 @@ struct axis
 };
 
 vector<players> wallOfLegends;
-
-
 
 
 bool isEmpty(std::ifstream& pFile)
@@ -78,6 +79,10 @@ void checkNewRecord(unsigned long long playerHighScore, time_t duration)
 		cout << "         Congratulations you've set a NEW record !!!\n";
 		cout << "         Set you're nickname: ";
 		cin >> x.nickname;
+		if (x.nickname.size()>20)
+		{
+			x.nickname.resize(20);
+		}
 		x.time = duration;
 		wallOfLegends.push_back(x);
 		writePlayersToFile();
@@ -95,6 +100,10 @@ void checkNewRecord(unsigned long long playerHighScore, time_t duration)
 			cout << "         Congratulations you've set a NEW record !!!\n";
 			cout << "         Set you're nickname: ";
 			cin >> x.nickname;
+			if (x.nickname.size()>20)
+			{
+				x.nickname.resize(20);
+			}
 			x.time = duration;
 			wallOfLegends.push_back(x);
 			writePlayersToFile();
@@ -114,7 +123,7 @@ void printWallOfLegends()
 	unsigned long long duration;
 	system("cls");
 	unsigned long long topScore;
-	char playerName[50];
+	string playerName;
 	int index = 1;
 	input.open("C:\\HighScore.txt");
 	cout << "             _______ _______ _______ _______ ___     _______ __   __ _______ ______   _______ \n";
@@ -128,10 +137,10 @@ void printWallOfLegends()
 	cout << "\n";
 	while (input >> topScore)
 	{
-		cout << "                                       ";
+		cout << "                            ";
 		cout << index << '.' << ' ';
 		input.get();
-		input.getline(playerName, 50);
+		input >> playerName;
 		cout << playerName << " with ";
 		cout << topScore;
 		input >> duration;
@@ -147,40 +156,46 @@ void printWallOfLegends()
 	}
 }
 
+
+
 int printMenu(bool& gameRunning)
 {
+	system("MODE CON: COLS=120 LINES=25");
 	customizeConsole();
 	setColor(10);
 	hideCursor();
-	cout << "" << endl;
-	cout << "                              --------------------------------------------------------  " << endl;
-	cout << "                             |                                                        | " << endl;
-	cout << "                             |   **** *    **** **** **** *   *    ***  * ***  ***    | " << endl;
-	cout << "                             |   *    *    *  * *  * *  * *   *    *  * * *  * *  *   | " << endl;
-	cout << "                             |   ***  *    **** **** **** *****    ***  * ***  *  *   | " << endl;
-	cout << "                             |   *    *    *  * *    *      *      *  * * *  * *  *   | " << endl;
-	cout << "                             |   *    **** *  * *    *      *      ***  * *  * ***    | " << endl;
-	cout << "                             |                                                        | " << endl;
-	cout << "                              --------------------------------------------------------  " << endl;
-	cout << "" << endl << endl;
-	cout << "                                                      M E N U:    " << endl << endl;
-	cout << "                                                   1: Classic  " << endl << endl;
-	cout << "                                                   2: Arcade  " << endl << endl;
-	cout << "                                                   3: 1vs1       " << endl << endl;
-	cout << "                                                   4: Help     " << endl << endl;
-	cout << "                                                   5: WallOfLegends    " << endl << endl;
-	cout << "                                                   6: Exit        " << endl << endl;
-
+	cout << '\n';
+	cout << "                    _______ ___     _______ _______ _______ __   __ _______ ___ ______   ______ \n";
+	cout << "                   |       |   |   |   _   |       |       |  | |  |  _    |   |    _ | |      | \n";
+	cout << "                   |    ___|   |   |  |_|  |    _  |    _  |  |_|  | |_|   |   |   | || |  _    |\n";
+	cout << "                   |   |___|   |   |       |   |_| |   |_| |       |       |   |   |_||_| | |   | \n";
+	cout << "                   |    ___|   |___|       |    ___|    ___|_     _|  _   ||   |    __  | |_|   | \n";
+	cout << "                   |   |   |       |   _   |   |   |   |     |   | | |_|   |   |   |  | |       | \n";
+	cout << "                   |___|   |_______|__| |__|___|   |___|     |___| |_______|___|___|  |_|______| \n";
+	cout << "\n\n\n\n";
+	setColor(15);
+	cout << "                                                    M E N U:   \n\n";
+	setColor(10);
+	cout << "                                                   1: Classic\n\n";
+	setColor(12);
+	cout << "                                                   2: Arcade\n\n";
+	setColor(9);
+	cout << "                                                   3: HowToPlay \n\n";
+	setColor(11);
+	cout << "                                                   4: WallOfLegends\n\n";
+	setColor(15);
+	cout << "                                                   5: Exit\n\n";
 	axis pos;
 	pos.X = 47;
 	pos.Y = 14;
 	gotoxy(pos.X, pos.Y);
 	cout << "-->";
+	gotoxy(47, 22);
 	while (true)
 	{
 		switch (_getch())
 		{
-		case 56: case 119:  case 72:
+		case 72: case 119: case 87:
 			if (pos.Y != 14)
 			{
 				for (unsigned int i = pos.X; i < pos.X + 3; i++)
@@ -191,10 +206,11 @@ int printMenu(bool& gameRunning)
 				pos.Y -= 2;
 				gotoxy(pos.X, pos.Y);
 				cout << "-->";
+				gotoxy(47, 22);
 			}
 			break;
-		case 50: case 115: case 80:
-			if (pos.Y != 24)
+		case 80: case 115: case 83:
+			if (pos.Y != 22)
 			{
 				for (unsigned int i = pos.X; i < pos.X + 3; i++)
 				{
@@ -204,6 +220,7 @@ int printMenu(bool& gameRunning)
 				pos.Y += 2;
 				gotoxy(pos.X, pos.Y);
 				cout << "-->";
+				gotoxy(47, 22);
 			}
 			break;
 
@@ -218,7 +235,6 @@ int printMenu(bool& gameRunning)
 			}
 			if (pos.Y == 18)
 			{
-				gameRunning = false;
 				return 3;
 			}
 			if (pos.Y == 20)
@@ -227,12 +243,8 @@ int printMenu(bool& gameRunning)
 			}
 			if (pos.Y == 22)
 			{
-				return 5;
-			}
-			if (pos.Y == 24)
-			{
 				gameRunning = false;
-				return 6;
+				return 5;
 			}
 		default:
 			break;
@@ -241,52 +253,53 @@ int printMenu(bool& gameRunning)
 }
 
 
-void gameOver(unsigned long long playerHighScore, bool& gameRunning, time_t duration)
+void gameOver(unsigned long long playerHighScore, bool& gameRunning, time_t duration, unsigned long long& timesPlayed)
 {
 	setColor(10);
 	system("cls");
-
+	timesPlayed++;
+	cout << '\n';
 	cout << "       ,ad8888ba,                                                  ,ad8888ba," << endl;
 	cout << "       d8''    `'8b                                               d8''    ''8b" << endl;
 	cout << "      d8'                                                        d8'        `8b" << endl;
 	cout << "      88             ,adPPYYba,  88,dPYba,,adPYba,    ,adPPYba,  88          88  8b       d8   ,adPPYba,  8b,dPPYba, " << endl;
-	cout << "      88      88888    ""     `Y8  88P'   '88'    '8a  a8P_____88  88          88  `8b     d8'  a8P_____88  88P'   'Y8" << endl;
+	cout << "      88      88888    ''   `Y8  88P'   '88'    '8a  a8P_____88  88          88  `8b     d8'  a8P_____88  88P'   'Y8" << endl;
 	cout << "      Y8,        88  ,adPPPPP88  88      88      88  8PP'''''''  Y8,         8P   `8b   d8'   8PP'''''''  88         " << endl;
 	cout << "       Y8a.    .a88   88,    ,88 88      88      88  '8b,   ,aa   Y8a.    .a8P     `8b,d8'    '8b,   ,aa  88   " << endl;
-	cout << "      `'Y88888P'    ` '8bbdP'Y8  88      88      88   `'Ybbd8''    `'Y8888Y''        '8'       `'Ybbd8''  88  " << endl;
+	cout << "       `'Y88888P'   ` '8bbdP'Y8  88      88      88   `'Ybbd8''    `'Y8888Y''        '8'       `'Ybbd8''  88  " << endl;
 	cout << '\n';
 	cout << '\n';
-	setColor(5);
-	cout << "         You got: " << playerHighScore << " points                                      " << "TimeSpent :" << duration;
+	setColor(15);
+	cout << "         You got: " << playerHighScore << " points                                      " << "TimeSpent: " << duration;
 	cout << '\n';
-	cout << "         RANK :";
+	cout << "         RANK:";
 	if (playerHighScore < 20)
 	{
 		cout << "Baboon\n";
 	}
 	else
 	{
-		if (playerHighScore > 50)
+		if (playerHighScore < 50)
 		{
 			cout << "Drunk Student\n";
 		}
 		else
 		{
-			if (playerHighScore > 200)
-			{
-				cout << "GameMaster\n";
-
-			}
-			else
+			if (playerHighScore < 200)
 			{
 				cout << "Rookie\n";
 			}
+			else
+			{
+				cout << "GameMaster\n";
+			}
 		}
 	}
+	cout << "         GamesPlayed: " << timesPlayed << endl;
 	gameOverSound();
 	checkNewRecord(playerHighScore, duration);
-	char userInput = 'n';
-	cout << "         Do you want to play again ? [y/N]: ";
+	char userInput;
+	cout << "         Do you want to play again ? Type [y/N]: ";
 	cin >> userInput;
 	if (userInput == 'y' || userInput == 'Y')
 	{
@@ -299,27 +312,24 @@ void gameOver(unsigned long long playerHighScore, bool& gameRunning, time_t dura
 
 }
 
-
-
-
 void gameInstructions()
 {
 	system("cls");
 	setColor(15);
-	cout << "           888 888         888  \n";
-	cout << "           888 888  ,e e,  888 888 88e  \n";
-	cout << "           8888888 d88 88b 888 888 888b \n";
-	cout << "           888 888 888   , 888 888 888P \n";
-	cout << "           888 888  'YeeP' 888 888 88'  \n";
-	cout << "                               888      \n";
-	cout << "                               888  \n";
+	cout << "                                             888 888         888  \n";
+	cout << "                                             888 888  ,e e,  888 888 88e  \n";
+	cout << "                                             8888888 d88 88b 888 888 888b \n";
+	cout << "                                             888 888 888   , 888 888 888P \n";
+	cout << "                                             888 888  'YeeP' 888 888 88'  \n";
+	cout << "                                                                 888      \n";
+	cout << "                                                                 888  \n";
 	cout << '\n';
-	cout << "       Use SPACE to move the bird  \n";
-	cout << "                 PowerUps \n";
-	cout << "            (only in arcade mode)     \n";
-	cout << "         1. G-no collision for 15 seconds \n";
-	cout << "         2. S-reduce the game speed slightly\n";
-	cout << "         3.P-double you're points\n";
+	cout << "                                            Use SPACE to move the bird  \n";
+	cout << "                                                    PowerUps \n";
+	cout << "                                              (only in arcade mode)     \n";
+	cout << "                                            1. G-no collision for 15 seconds \n";
+	cout << "                                            2. S-reduce the game speed slightly\n";
+	cout << "                                            3. P-doubles the points\n";
 	while (!_getch())
 	{
 

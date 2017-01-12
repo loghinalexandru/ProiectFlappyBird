@@ -4,7 +4,7 @@
 class pipe
 {
 private:
-	char pipeChar = 222;
+	unsigned char pipeChar = 222;
 	int pipex, pipey;
 	int pipexInitialPosition, pipeyInitialPosition;
 	int randomNumber = (rand() % 11) + 2;
