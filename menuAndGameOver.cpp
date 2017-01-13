@@ -335,8 +335,8 @@ void gameInstructions()
 	cout << "                                                    PowerUps \n";
 	cout << "                                              (only in arcade mode)     \n";
 	cout << "                                            1. G-no collision with the pipes for 15 seconds\n";
-	cout << "                                            2. S-reduces the game speed slightly\n";
-	cout << "                                            3. P-doubles the points\n";
+	cout << "                                            2. S-reduce the game speed slightly\n";
+	cout << "                                            3. P-increase the score by 3 points \n";
 	while (!_getch())
 	{
 

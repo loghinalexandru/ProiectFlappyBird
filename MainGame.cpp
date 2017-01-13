@@ -158,7 +158,7 @@ void powerUpCheckCollision()
 			}
 			break;
 		case 2:
-			playerHighScore *= 2;
+			playerHighScore += 3;
 			displayScore();
 			break;
 
@@ -166,7 +166,6 @@ void powerUpCheckCollision()
 		}
 	}
 }
-
 
 
 void startGame()
