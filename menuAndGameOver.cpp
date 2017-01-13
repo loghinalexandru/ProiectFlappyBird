@@ -7,7 +7,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
-#include<windows.h>
+#include <windows.h>
 #include <string>
 
 using namespace std;
@@ -32,10 +32,9 @@ struct axis
 
 vector<players> wallOfLegends;
 
-
-bool isEmpty(std::ifstream& pFile)
+bool isEmpty(ifstream& pFile)
 {
-	return pFile.peek() == std::ifstream::traits_type::eof();
+	return pFile.peek() == ifstream::traits_type::eof();
 }
 
 void writePlayersToFile()
@@ -76,10 +75,10 @@ void checkNewRecord(unsigned long long playerHighScore, time_t duration)
 	if (isEmpty(input))
 	{
 		x.score = playerHighScore;
-		cout << "         Congratulations you've set a NEW record !!!\n";
-		cout << "         Set you're nickname: ";
+		cout << "         Congratulations you have set a NEW record !!!\n";
+		cout << "         Set your nickname(max length 20): ";
 		cin >> x.nickname;
-		if (x.nickname.size()>20)
+		if (x.nickname.size() > 20)
 		{
 			x.nickname.resize(20);
 		}
@@ -97,10 +96,10 @@ void checkNewRecord(unsigned long long playerHighScore, time_t duration)
 		{
 
 			x.score = playerHighScore;
-			cout << "         Congratulations you've set a NEW record !!!\n";
-			cout << "         Set you're nickname: ";
+			cout << "         Congratulations you have set a NEW record !!!\n";
+			cout << "         Set your nickname(max length 20): ";
 			cin >> x.nickname;
-			if (x.nickname.size()>20)
+			if (x.nickname.size() > 20)
 			{
 				x.nickname.resize(20);
 			}
@@ -118,6 +117,7 @@ void checkNewRecord(unsigned long long playerHighScore, time_t duration)
 
 void printWallOfLegends()
 {
+	system("MODE CON: COLS=120 LINES=25");
 	setColor(11);
 	bool backToMenu = true;
 	unsigned long long duration;
@@ -137,7 +137,7 @@ void printWallOfLegends()
 	cout << "\n";
 	while (input >> topScore)
 	{
-		cout << "                            ";
+		cout << "                               ";
 		cout << index << '.' << ' ';
 		input.get();
 		input >> playerName;
@@ -255,6 +255,7 @@ int printMenu(bool& gameRunning)
 
 void gameOver(unsigned long long playerHighScore, bool& gameRunning, time_t duration, unsigned long long& timesPlayed)
 {
+	system("MODE CON: COLS=120 LINES=25");
 	setColor(10);
 	system("cls");
 	timesPlayed++;
@@ -298,22 +299,28 @@ void gameOver(unsigned long long playerHighScore, bool& gameRunning, time_t dura
 	cout << "         GamesPlayed: " << timesPlayed << endl;
 	gameOverSound();
 	checkNewRecord(playerHighScore, duration);
-	char userInput;
-	cout << "         Do you want to play again ? Type [y/N]: ";
-	cin >> userInput;
-	if (userInput == 'y' || userInput == 'Y')
+	cout << "         Do you want to play again ? Press [y/n] ";
+	bool validInput = false;
+	while (!validInput)
 	{
-		gameRunning = true;
-	}
-	else
-	{
-		gameRunning = false;
-	}
+		switch (_getch())
+		{
+		case 89: case 121:
+			validInput = true;
+			gameRunning = true;
+			break;
+		case 78: case 110:
+			validInput = true;
+			gameRunning = false;
+			break;
+		}
 
+	}
 }
 
 void gameInstructions()
 {
+	system("MODE CON: COLS=120 LINES=25");
 	system("cls");
 	setColor(15);
 	cout << "                                             888 888         888  \n";
@@ -324,11 +331,11 @@ void gameInstructions()
 	cout << "                                                                 888      \n";
 	cout << "                                                                 888  \n";
 	cout << '\n';
-	cout << "                                            Use SPACE to move the bird  \n";
+	cout << "                                 Use SPACE to move the bird and do not touch the ground \n";
 	cout << "                                                    PowerUps \n";
 	cout << "                                              (only in arcade mode)     \n";
-	cout << "                                            1. G-no collision for 15 seconds \n";
-	cout << "                                            2. S-reduce the game speed slightly\n";
+	cout << "                                            1. G-no collision with the pipes for 15 seconds\n";
+	cout << "                                            2. S-reduces the game speed slightly\n";
 	cout << "                                            3. P-doubles the points\n";
 	while (!_getch())
 	{

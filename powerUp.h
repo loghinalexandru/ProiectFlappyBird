@@ -1,4 +1,3 @@
-
 class powerUp
 {
 private:

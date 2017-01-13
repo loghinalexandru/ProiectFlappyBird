@@ -152,7 +152,7 @@ void powerUpCheckCollision()
 			displayScore();
 			break;
 		case 1:
-			if (gameSpeed < 150)
+			if (gameSpeed < 120)
 			{
 				gameSpeed += 10;
 			}
@@ -171,6 +171,7 @@ void powerUpCheckCollision()
 
 void startGame()
 {
+	system("MODE CON: COLS=120 LINES=25");
 	gameStart = time(NULL);
 	system("cls");
 	unsigned int timeInGodMode = 0;
